@@ -11,6 +11,18 @@ var renderer, scene, camera;
 // Variables globales
 var esferacubo, cubo, angulo = 0;
 
+var rays = [
+  new THREE.Vector3(0, 0, 1),
+  new THREE.Vector3(1, 0, 1),
+  new THREE.Vector3(1, 0, 0),
+  new THREE.Vector3(1, 0, -1),
+  new THREE.Vector3(0, 0, -1),
+  new THREE.Vector3(-1, 0, -1),
+  new THREE.Vector3(-1, 0, 0),
+  new THREE.Vector3(-1, 0, 1)
+];
+var caster = new THREE.Raycaster();
+
 // Acciones
 init();
 loadScene();
@@ -39,6 +51,8 @@ function init() {
   // Movemos la camare respecto al sistema de referencia de la scena
   camera.position.set(0.5, 3, 9);
   camera.lookAt(new THREE.Vector3(0,0,0));
+
+  
 }
 
 function loadScene() {

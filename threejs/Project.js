@@ -10,7 +10,8 @@ var antes = Date.now();
 var clock = new THREE.Clock();
 var sun;
 var shadow;
-var objects = [];
+
+
 
 //Acciones
 init();
@@ -30,9 +31,7 @@ function init() {
     renderer.shadowMap.enabled = true;
     //No auto clear para poder tener dos cámaras superpuestas
     //renderer.autoClear = false
-    //Añadir un canvas al container
     document.getElementById("container").appendChild(renderer.domElement);
-    document.addEventListener('mousedown', onDocumentMouseDown, false);
 
     // Escena
     scene = new THREE.Scene();
@@ -42,7 +41,7 @@ function init() {
     var ar = window.innerWidth / window.innerHeight;
     camera = new THREE.PerspectiveCamera(50, ar, 0.1, 5000);
     //Situar la cámara
-    camera.position.set(20,20,20);
+    camera.position.set(0,50,220);
 
     //Dirección en la que mira la cámara
     camera.lookAt( new THREE.Vector3(0,0,0));
@@ -57,7 +56,7 @@ function init() {
  
     //Captura de eventos --> Tolerancia a resize
     window.addEventListener('resize',updateAspectRatio);
-
+    
  }
 
  function updateAspectRatio() {
@@ -74,34 +73,33 @@ function init() {
 
 // function onDocumentMouseDown(event) {
 //   event.preventDefault();
-//   var vector = new THREE.Vector3((event.clientX / window.innerWidth) * 2 -
-//       1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
+//   var vector = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
 //   projector.unprojectVector(vector, camera);
-//   var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position)
-//       .normalize());
+//   objects.updateMatrixWorld(); 
+//   var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
 //   var intersects = raycaster.intersectObjects(objects,true);
 //   if (intersects.length > 0) {
-//       window.open(intersects[0].ob.userData.URL);
+//     window.open(intersects[0].object.userData.URL);
 //   }
-//  }
+// }
 
- function onDocumentMouseDown(event) {
-  event.preventDefault();
+//  function onDocumentMouseDown(event) {
+//   event.preventDefault();
 
-  mouse.x = ( ( event.clientX ) / renderer.domElement.width ) * 2 - 1; 
-  mouse.y = - ( ( event.clientY ) / renderer.domElement.height ) * 2 + 1;
+//   mouse.x = ( ( event.clientX ) / renderer.domElement.width ) * 2 - 1; 
+//   mouse.y = - ( ( event.clientY ) / renderer.domElement.height ) * 2 + 1;
 
-  var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5);
-  vector = vector.unproject(camera);
-  var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-  var intersects = raycaster.intersectObject(objects);
+//   var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5);
+//   vector = vector.unproject(camera);
+//   var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+//   var intersects = raycaster.intersectObject(objects);
 
-  if (intersects.length > 0) {    
-    window.open(intersects[0].ob.userData.URL);   
-  }
+//   if (intersects.length > 0) {    
+//     window.open(intersects[0].ob.userData.URL);   
+//   }
 
-  render();
-};
+//   render();
+// };
 
  function loadScene() {
   
@@ -147,21 +145,7 @@ function init() {
     scene.add( newtree );
   }
 
-  var geometry = new THREE.BoxGeometry(12, 25, 8);
-  var ob = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-    color: Math.random() * 0xffffff }));  
-  ob.position.x = -170; 
-  ob.position.z = -160; 
-  //console.log(ob);
-  ob.userData = { URL: "http://stackoverflow.com"};
-  scene.add(ob);
-  objects.push(ob);
-  
 
-  
-//   if (intersects.length > 0) {
-//     window.open(intersects[0].object.userData.URL);
-// }
  
 	// sun = new THREE.DirectionalLight( 0xffffff, 0.8);
 	// sun.position.set( 0,4,1 );
@@ -201,7 +185,9 @@ function init() {
     //scene.add(luzFocal);
 
   //scene.add( new THREE.AxisHelper(3) );
+  
  }
+
 
  function getRandomStarField(numberOfStars, width, height) {
     var canvas = document.createElement('CANVAS');
@@ -242,12 +228,12 @@ return texture;
 	midPointVector=treeGeometry.vertices[0].clone();
 	var currentTier=0;
 	var vertexIndex;
-	//blowUpTree(treeGeometry.vertices,sides,0,scalarMultiplier);
-	//tightenTree(treeGeometry.vertices,sides,1);
-	//blowUpTree(treeGeometry.vertices,sides,2,scalarMultiplier*1.1,true);
-	//tightenTree(treeGeometry.vertices,sides,3);
-	//blowUpTree(treeGeometry.vertices,sides,4,scalarMultiplier*1.2);
-	//tightenTree(treeGeometry.vertices,sides,5);
+	blowUpTree(treeGeometry.vertices,sides,0,scalarMultiplier);
+	tightenTree(treeGeometry.vertices,sides,1);
+	blowUpTree(treeGeometry.vertices,sides,2,scalarMultiplier*1.1,true);
+	tightenTree(treeGeometry.vertices,sides,3);
+	blowUpTree(treeGeometry.vertices,sides,4,scalarMultiplier*1.2);
+	tightenTree(treeGeometry.vertices,sides,5);
 	var treeTop = new THREE.Mesh( treeGeometry, treeMaterial );
 	treeTop.castShadow=true;
 	treeTop.receiveShadow=false;
@@ -261,6 +247,52 @@ return texture;
 	tree.add(treeTrunk);
 	tree.add(treeTop);
 	return tree;
+}
+
+function blowUpTree(vertices,sides,currentTier,scalarMultiplier,odd){
+	var vertexIndex;
+	var vertexVector= new THREE.Vector3();
+	var midPointVector=vertices[0].clone();
+	var offset;
+	for(var i=0;i<sides;i++){
+		vertexIndex=(currentTier*sides)+1;
+		vertexVector=vertices[i+vertexIndex].clone();
+		midPointVector.y=vertexVector.y;
+		offset=vertexVector.sub(midPointVector);
+		if(odd){
+			if(i%2===0){
+				offset.normalize().multiplyScalar(scalarMultiplier/6);
+				vertices[i+vertexIndex].add(offset);
+			}else{
+				offset.normalize().multiplyScalar(scalarMultiplier);
+				vertices[i+vertexIndex].add(offset);
+				vertices[i+vertexIndex].y=vertices[i+vertexIndex+sides].y+0.05;
+			}
+		}else{
+			if(i%2!==0){
+				offset.normalize().multiplyScalar(scalarMultiplier/6);
+				vertices[i+vertexIndex].add(offset);
+			}else{
+				offset.normalize().multiplyScalar(scalarMultiplier);
+				vertices[i+vertexIndex].add(offset);
+				vertices[i+vertexIndex].y=vertices[i+vertexIndex+sides].y+0.05;
+			}
+		}
+	}
+}
+function tightenTree(vertices,sides,currentTier){
+	var vertexIndex;
+	var vertexVector= new THREE.Vector3();
+	var midPointVector=vertices[0].clone();
+	var offset;
+	for(var i=0;i<sides;i++){
+		vertexIndex=(currentTier*sides)+1;
+		vertexVector=vertices[i+vertexIndex].clone();
+		midPointVector.y=vertexVector.y;
+		offset=vertexVector.sub(midPointVector);
+		offset.normalize().multiplyScalar(0.06);
+		vertices[i+vertexIndex].sub(offset);
+	}
 }
 
 function update(){
@@ -280,6 +312,7 @@ function update(){
 		
   cameraControls.update();
 
+  
 }
 
 function moveCamera() {
