@@ -10,14 +10,13 @@ var antes = Date.now();
 var clock = new THREE.Clock();
 var sun;
 var shadow;
-var video, videoImage, videoImageContext, videotexture;
+var video, videoImage, videoImageContext, videotexture, sound;
 
 
 //Acciones
 init();
 loadScene();
 render();
-
 
 
 function init() {
@@ -239,7 +238,7 @@ function init() {
     camera.add( listener );
 
     // create a global audio source
-    var sound = new THREE.Audio( listener );
+    sound = new THREE.Audio( listener );
 
     // load a sound and set it as the Audio object's buffer
     var audioLoader = new THREE.AudioLoader();
@@ -414,6 +413,8 @@ function update(){
     mytrain.translateZ( -moveDistance );
   if ( keyboard.pressed("down") )
     mytrain.translateZ(  moveDistance);
+  if ( keyboard.pressed("A") )
+    sound.play();
         
   if(video.readyState === video.HAVE_ENOUGH_DATA){
 	videoImageContext.drawImage(video,0,0);
