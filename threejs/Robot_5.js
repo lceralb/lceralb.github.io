@@ -169,8 +169,8 @@ function loadScene() {
                                                 specular:'white',
                                                 shininess: 30,
                                                 map: texturaMetal});
-   var materialMetal2 = new THREE.MeshLambertMaterial({color: 'brown', map: texturaMetal});
-   var materialPinzas = new THREE.MeshLambertMaterial({color: 'white',
+   var materialMetal2 = new THREE.MeshLambertMaterial({color: 'orange', map: texturaMetal});
+   var materialPinzas = new THREE.MeshLambertMaterial({color: 'orange',
                                                 wireframe: false});
    var materialRotula = new THREE.MeshPhongMaterial({color: 'white',
                                                 specular:'white',
@@ -240,7 +240,7 @@ function loadScene() {
    base.receiveShadow = true;
    base.castShadow = true;
    brazo = new THREE.Object3D();
-   var eje = new THREE.Mesh(geoeje,materialMetal1);
+   var eje = new THREE.Mesh(geoeje,materialMetal2);
    eje.receiveShadow = true;
    eje.castShadow = true;
    eje.position.y = 60;
@@ -281,7 +281,7 @@ function loadScene() {
    nervio4.position.y = 40;
    nervio4.position.x = 12;
    nervio4.position.z = -12;
-   var mano = new THREE.Mesh(geomano,materialMetal2);
+   var mano = new THREE.Mesh(geomano,materialMetal1);
    mano.receiveShadow = true;
    mano.castShadow = true;
    mano.position.y = 80;
