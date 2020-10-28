@@ -10,7 +10,9 @@ Para explorar la escena, es necesario hacer uso del tren. Su movimiento está de
 
 Las flechas de movimiento (arriba / abajo) y giro (derecha / izquierda) se pueden mantener pulsadas simultáneamente para conseguir un movimiento circular.
 
-Por otro lado, el audio se acciona cada vez con la tecla "A".
+Por otro lado, el audio se acciona cada vez con la tecla "A". 
+Nota: Hay un bug conocido en Chrome para la reproducción de audio: https://bugs.chromium.org/p/chromium/issues/detail?id=933677
+Por favor, usa Firefox o Internet Explorer para activar esta funcionalidad.
 
 ## Uso y alcance de este proyecto
 **Este proyecto tiene fines exclusivamente docentes**   
